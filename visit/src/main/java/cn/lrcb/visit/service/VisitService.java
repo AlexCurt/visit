@@ -41,7 +41,7 @@ public class VisitService {
 	public int editVisit(Visit entity) {
 		int code = 0;
 		try {
-			visitMapper.addVisit(entity);
+			visitMapper.editVisit(entity);
 		} catch (Exception e) {
 			// TODO: handle exception
 			code = 1;

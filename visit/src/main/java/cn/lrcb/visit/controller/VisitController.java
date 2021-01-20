@@ -69,7 +69,6 @@ public class VisitController extends BaseController {
 	@RequestMapping(value = "/edit")
 	public BaseModel editVisit(Visit model) {
 		int code = visitService.editVisit(model);
-		
 		if(code==0) {
 			return makeModel(code, MSG_UPDATE_SUCC);
 		}else {

@@ -5,7 +5,6 @@
 <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
 <link rel="stylesheet" href="layui/css/layui.css" media="all" />
 <script type="text/javascript" src="layui/layui.js"></script>
-<script type="text/javascript" src="visit.js"></script>
 <title>修改服务器信息</title>
 </head>
 <body>
@@ -81,7 +80,7 @@
 						 //提交
 					    form.on('submit(visitSub)', function(data){
 					    	  var data = form.val('editForm');
-					    	 var url = "http://localhost:8007/visit/edit?name=" + data.name + "&ip=" + data.ip + "&port=" + data.port + "&username=" + data.username + "&password=" + data.password 
+					    	 var url = "http://localhost:8007/visit/edit?id="+id+"&name=" + data.name + "&ip=" + data.ip + "&port=" + data.port + "&username=" + data.username + "&password=" + data.password 
 					         $.get(url, function (data) {
 					             if (data.code == 0) {
 					            	 window.parent.location.reload();
