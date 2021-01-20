@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lrcb.visit.mapper.VisitMapper">
+	<!-- 根据主键id获取指定的Http服务器信息 -->
+	<select id="getById" resultType="cn.lrcb.visit.model.Visit">
+		select visit.* from visit where id=#{id}
+	</select>
+    <!-- 获取所有Http服务器信息 -->
+    <select id="getList" resultType="cn.lrcb.visit.model.VisitDto">
+	select * from visit 
+	</select>
+	<!-- 新增http服务器信息 -->
+	<insert id = "addVisit">
+	 insert into visit(id,name,ip,port,username,password)values(#{id},#{name},#{ip},#{port},#{username},#{password})
+	</insert>
+	<!-- 删除指定的http服务器信息 -->
+	<delete id="deleteVisit">
+		delete from visit where id=#{id}
+	</delete>
+	<!-- 修改指定的http服务器信息 -->
+	<update id="editVisit">
+		update visit set name =#{name},ip=#{ip},port=#{port},username=#{username},password=#{password} where id=#{id}
+	</update>
+</mapper>

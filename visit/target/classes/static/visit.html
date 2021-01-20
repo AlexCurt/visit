@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+<link rel="stylesheet" href="layui/css/layui.css" media="all" />
+<script type="text/javascript" src="layui/layui.js"></script>
+<head>
+<meta charset="UTF-8">
+<title>ip访问管理系统</title>
+</head>
+<body>
+<input type="hidden" size="30" id="p" />
+ <div class="layui-container" style="height: 100%">
+ 			<div class="layui-body-header">
+				<span class="layui-body-header-title">ip访问管理表</span>
+			</div>
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-md5">
+					<div class="layui-row grid-demo">
+						<form class="layui-form" action="post" id="qFile">
+								<label class="layui-form-label">文件名</label>
+								<div class="layui-input-block">
+									<input id="fn" name="fileName" type="text" placeholder="请输入文件名" autocomplete="off" class="layui-input">
+								</div>
+						</form>
+					</div>
+				</div>
+					<div class="layui-col-md5">
+							<button type="button" class="layui-btn" onclick="queryList();">
+						 		<i class="layui-icon">&#xe615;</i>查询
+							</button>	
+<!-- 				            <button type="reset" class="layui-btn layui-btn-primary">重置</button> -->
+   				            <button type="button" class="layui-btn " onclick="queryClear();">重置</button>
+				    
+				    </div>
+				</div>
+				<div class="layui-row grid-demo grid-demo-bg1">
+				<div class="layui-btn-container">
+						<button class="layui-btn layui-btn-sm" lay-event="add"
+						onclick="addVisit()">新增</button>
+				</div>
+				<table class = "layui-hide" id="visitTab"  lay-filter="visitTab"></table>
+				<script type="text/html" id="barVisit">
+		  <a class="layui-btn layui-btn-xs" lay-event="detail">详情</a>
+          <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+				</script>
+            	<script>
+            layui.use('table',function(){
+            	 var $ = layui.$,
+				 table = layui.table;
+            	 var fileName = $('#fn').val();
+            	 table.render({
+            		    elem : '#visitTab',
+            		    id : 'allTab',
+						height : 500,
+						width : 1060,
+						toolbar : '#toolbarVisit',
+						totalRow : true,
+						title : 'ip访问信息表',
+						url : 'http://localhost:8007/visit/list?fileName='+fileName,//数据接口
+						page : false,//未开启分页
+						cols : [[ //表头
+							{
+								field : 'id',
+								title : '序号',
+								minWidth : 50,
+								align : 'center',
+								sort:true
+							}, {
+								field : 'name',
+								title : '名称',
+								minWidth : 80,
+								align : 'center'
+							}, {
+								field : 'ip',
+								title : 'IP',
+								minWidth : 80,
+								align : 'center'
+							}, {
+								field : 'port',
+								title : '端口',
+								minWidth : 80,
+								align : 'center'
+							},{
+								field : 'username',
+								title : '用户名',
+								minWidth : 80,
+								align : 'center'
+							},{
+								field : 'password',
+								title : '密码',
+								minWidth : 80,
+								align : 'center'
+							},{
+								field : 'number',
+								title : '文件数量',
+								minWidth : 80,
+								align : 'center'
+            	 			},{
+								fixed : 'right',
+								title : '操作',
+								align : 'center',
+								minWidth : 160,
+								toolbar : '#barVisit'
+							}
+							]]
+            	 });
+            	//监听行工具事件
+                 table.on('tool(visitTab)', function(obj){
+                     var data = obj.data;
+                     if(obj.event === 'del'){      //删除
+                         delById(data.id)
+        		      } else if(obj.event=='edit'){
+        		    	editVisit(data.id);
+        		      }else {     //详情
+                         addLink(data);
+                     }
+                 });
+            	 
+            	
+                 //删除
+                 function delById(id){
+                     layer.confirm('确定删除吗？', function(index) {
+                     	var url = "http://localhost:8007/visit/delete?id=" + id;
+                         $.post(url,function (data){
+					               layer.msg('已删除');
+                            window.location.reload();
+                              layer.close(index); //关闭弹层
+                         });
+                     });
+                 }
+            	
+            	 function addLink(d){
+         		    var alink = "http://"+d.ip+":"+d.port; 
+         		    window.self.location= "http://"+d.ip+":"+d.port;
+         	 	 }
+            	 
+            	
+            	 
+            });
+            //增加http服务器信息
+			  function addVisit(){
+				 var addDia=layer.open({
+					 type: 2
+                   ,title: '添加http服务器'
+                  ,content: 'add.html'
+                   ,maxmin: true
+                   ,area: ['700px', '600px']
+				 })
+			  }
+            
+			//编辑页面
+              function editVisit(id){
+				$('#p').val(id);
+   		         var editDia=layer.open({
+                      type: 2
+                      ,title: '修改http服务器信息'
+                     ,content: 'edit.html?id='+id
+                      ,maxmin: true
+                      ,area: ['700px', '600px']
+   		         	  ,success:function(layero,index){
+   		         		layer.iframeAuto(index)
+   		         	  }
+      		          });      		    
+              }
+			
+              function queryList(){
+         		 var fileName = $('#fn').val();
+         		 var url = "http://localhost:8007/visit/list?fileName="+fileName;
+         		 $.get(url,function(data){
+         			 if(data.code == 0){
+         				 layui.use('table',function(){
+         					 var table1 = layui.table;
+         					 table1.render({
+         						 elem : '#visitTab',
+         	            		    id : 'allTab',
+         							height : 500,
+         							width : 1060,
+         							toolbar : '#toolbarVisit',
+         							totalRow : true,
+         							title : 'ip访问信息表',
+         							url :  url,
+         							page : false,//未开启分页
+         							cols : [[ //表头
+         								{
+         									field : 'id',
+         									title : '序号',
+         									minWidth : 50,
+         									align : 'center',
+         									sort:true
+         								}, {
+         									field : 'name',
+         									title : '名称',
+         									minWidth : 80,
+         									align : 'center'
+         								}, {
+         									field : 'ip',
+         									title : 'IP',
+         									minWidth : 80,
+         									align : 'center'
+         								}, {
+         									field : 'port',
+         									title : '端口',
+         									minWidth : 80,
+         									align : 'center'
+         								},{
+         									field : 'username',
+         									title : '用户名',
+         									minWidth : 80,
+         									align : 'center'
+         								},{
+         									field : 'password',
+         									title : '密码',
+         									minWidth : 80,
+         									align : 'center'
+         								},{
+         									field : 'number',
+         									title : '文件数量',
+         									minWidth : 80,
+         									align : 'center'
+         	            	 			},{
+         									fixed : 'right',
+         									title : '操作',
+         									align : 'center',
+         									minWidth : 160,
+         									toolbar : '#barVisit'
+         								}
+         								]]
+         					 });
+         				 });
+         			 }
+         		 });
+         	 }
+			
+              function queryClear(){
+            	  document.getElementById("qFile").reset();
+              }
+   </script>
+   </div>
+</div>
+</body>
+</html>

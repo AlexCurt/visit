@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+<link rel="stylesheet" href="layui/css/layui.css" media="all" />
+<script type="text/javascript" src="layui/layui.js"></script>
+<script type="text/javascript" src="visit.js"></script>
+<title>添加服务器信息</title>
+</head>
+<body>
+	<form id="addForm" class="layui-form" lay-filter="addForm" action="">
+		<div style="padding: 20px; background-color: #F2F2F2;">
+			<div class="layui-row layui-col-space15">
+				<fieldset class="layui-elem-field layui-field-title"
+					style="margin-top: 0;">
+					<legend>服务器信息</legend>
+				</fieldset>
+				<div class="layui-col-md12">
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">id</label>
+							<div class="layui-input-block">
+								<input id="id" value='' type="text" name="id" autocomplete="off"
+									placeholder="请输入序号" class="layui-input">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">主机名称</label>
+							<div class="layui-input-block">
+								<input id="name" type="text" name="name" autocomplete="off"
+									placeholder="请输入名称" class="layui-input">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">IP</label> 
+							<div class="layui-input-block">
+							<input id="ip" type="text" name="ip" autocomplete="off" placeholder="请输入ip地址 " class="layui-input"> 
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">端口</label>
+							<div class="layui-input-block">
+							<input id="port" type="text" name="port" autocomplete="off" placeholder="请输入端口" class="layui-input">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+						<label class="layui-form-label">用户名</label> 
+						<div class="layui-input-block">
+						<input id="username" type="text" name="username" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+						</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+						<label class="layui-form-label">密码</label>
+						<div class="layui-input-block"> 
+						<input id="password" type="text" name="password" autocomplete="off"	placeholder="请输入密码" class="layui-input">
+					</div>
+					</div>
+					</div>
+					<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button type="submit" class="layui-btn" lay-submit="" lay-filter="visitSub">提交</button>
+								<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+							</div>
+						</div>
+				</div>
+				<script>
+				layui.use(['form','layer'],function(){
+			    	var form = layui.form
+			    	  ,layer = layui.layer;
+			    	
+			        //提交
+			        form.on('submit(visitSub)', function(data){
+			        	  var data = form.val('addForm');
+			        	 var url = "http://localhost:8007/visit/add?id=" + data.id + "&name=" + data.name + "&ip=" + data.ip + "&port=" + data.port + "&username=" + data.username + "&password=" + data.password	 
+			             $.get(url, function (data) {
+			                 if (data.code == 0) {
+			                	 window.parent.location.reload();
+			                 } else {
+			                     alert(data.msg);
+			                 }
+			             });
+			          return false;
+			        });
+			    	
+				});
+				</script>
+			</div>
+		</div>
+	</form>
+</body>
+</html>
